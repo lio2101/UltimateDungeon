@@ -14,6 +14,7 @@ public class BossController : MonoBehaviour
     [Header("Components")]
     [SerializeField] private SwordBehavior _sword;
     [SerializeField] private Rigidbody _rb;
+    [SerializeField] private Life _life;
 
     [Header("Settings")]
     [SerializeField] float _maxSpeed = 10f;
@@ -30,6 +31,11 @@ public class BossController : MonoBehaviour
     private Coroutine _followPlayerCoroutine;
     private float _rotationVelocity;
     private float _timeSinceAttack;
+
+    public float Attackspeed => _attackSpeed;
+    public float Maxspeed => _maxSpeed;
+    public Life Life => _life;
+
 
 
     void Start()
