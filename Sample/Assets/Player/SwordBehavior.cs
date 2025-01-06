@@ -3,37 +3,26 @@ using UnityEngine;
 
 public class SwordBehavior : MonoBehaviour
 {
-    [SerializeField] private float _swingDuration = 0.2f;
+    [SerializeField] private float _swingDuration = 1f;
     [SerializeField] private int _swordDamage = 20;
 
 
     private float _swingAngle = 75;
     private bool _isSwing;
+    private bool _hasHit;
 
+    public float SwingDuration => _swingDuration;
 
     public void Swing()
     {
         StartCoroutine(SwingRoutine());
     }
 
+
     private IEnumerator SwingRoutine()
     {
         _isSwing = true;
-        float t = 0.0f;
-
-        // change to lerp in direction of player
-
-        while (t < _swingDuration)
-        {
-            float newAngle = Mathf.Lerp(0, _swingAngle, (t / _swingDuration));
-            transform.localRotation = Quaternion.Euler(0f, 0f, newAngle);
-            t += Time.deltaTime;
-
-            yield return null;
-        }
-        yield return new WaitForSeconds(0.2f);
-        transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-
+        yield return new WaitForSeconds(_swingDuration);
         _isSwing = false;
     }
 
@@ -44,14 +33,29 @@ public class SwordBehavior : MonoBehaviour
             if(other.TryGetComponent<BossController>(out BossController boss))
             {
                 boss.Life.TakeDamage(_swordDamage);
-
+                Debug.Log(@"Boss hit");
                 if(boss.Life.CurrentHealth <= 0)
                 {
-                    // reload scene
-                    // Game Manager adapt Difficulty
+                    Debug.Log(@"Boss dead");
+                    GameManager.Instance.Reset();
+                    GameManager.Instance.AdaptDifficulty();
+                }
+            }
+            else if (other.TryGetComponent<PlayerController>(out PlayerController player))
+            {
+                player.Life.TakeDamage(_swordDamage);
+                Debug.Log(@"Player hit");
+
+                if (player.Life.CurrentHealth <= 0)
+                {
+                    Debug.Log(@"Player dead");
+                    GameManager.Instance.Reset();
+                    GameManager.Instance.AdaptDifficulty();
                 }
             }
         }
     }
+
+
 
 }

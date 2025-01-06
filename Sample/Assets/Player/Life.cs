@@ -20,12 +20,12 @@ public class Life : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-
+        _currentHealth -= amount;
     }
 
     public void Regenerate(int amount)
     {
-
+        _currentHealth = _maxHealth;
     }
 
 }
